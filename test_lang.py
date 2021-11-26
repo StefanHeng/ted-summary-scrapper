@@ -20,3 +20,8 @@ if __name__ == '__main__':
     # ic(re.match(r'^/\d{4}/\d{2}/$', s))
 
     ic(re.split(r'\W+', 'Words, words, words.'))
+
+    myString = "I want to Remove all white \t spaces, new lines \n and tabs \t"
+    ic(re.sub(r"[\n\t\s]*", "", myString))
+    ic(re.sub(r"[\n\t]+", "", myString))
+

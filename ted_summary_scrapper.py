@@ -29,13 +29,14 @@ class TedSummaryScrapper:
     def __init__(self):
         self.url = config('url_seeds.ted_summary')
         self.soup = get_soup(self.url)
-        self.month_links = self._month_links()
-        # ic(self.month_links)
+        self.link_divisions = self._link_divisions_by_month()
+        ic(self.link_divisions)
         self.links = self._sum_links()
-        # ic(self.links, len(flatten(self.links.values())))
-        self.sums = self._sum()
+        ic(self.links, len(flatten(self.links.values())))
+        self.sums = self._sums()
+        ic(self.sums)
 
-    def _month_links(self):
+    def _link_divisions_by_month(self):
         links = [link['href'] for link in self.soup.find(id='archives-2').find_all('a')]
         ms = [(re.match(r'.*?(?P<year>\d{4})[/](?P<month>\d{2})[/]$', link), link) for link in links]
         return {
@@ -43,8 +44,8 @@ class TedSummaryScrapper:
         }
 
     def _sum_links(self):
-        def _links(link_month):
-            soup = get_soup(link_month)
+        def _links(link_date):
+            soup = get_soup(link_date)
             entries = soup.find_all('h1', class_='entry-title')
 
             def _link(entry):
@@ -52,10 +53,14 @@ class TedSummaryScrapper:
                 assert len(links) == 1
                 return links[0]['href']
             return [_link(e) for e in entries]
-        return {month: _links(link) for month, link in self.month_links.items()}
+        return {date: _links(link) for date, link in self.link_divisions.items()}
 
-    def _sum(self):
-        for month, links in self.links.items():
+    def _sums(self) -> list[dict]:
+        """
+        :return: List of ted summary objects, containing the date, speaker, title, talk transcript and summary
+        """
+        # for month, links in self.links.items():
+        def link2dict(link):
             # if month == (2015, 4):
             #     ic(link)
             def soup2summary(soup):
@@ -77,7 +82,7 @@ class TedSummaryScrapper:
                 # ic(elms)
                 idx_strt = [p.__str__() for p in elms].index('<p><strong>Summary</strong></p>')
                 idx_end = [p.__str__() for p in elms].index('<p><strong>My Thoughts</strong></p>')
-                elms = elms[idx_strt + 1:idx_end]
+                elms = elms[idx_strt+1 : idx_end]
                 # ic(elms)
                 return dict(
                     summary='\n'.join(elm2str(elm) for elm in elms)
@@ -98,28 +103,48 @@ class TedSummaryScrapper:
                 """
                 :param soup: `BeautifulSoup` object for a `ted` talk page
                 """
-                ic(soup.prettify())
+                # ic(soup.prettify())
+                # trans_clusters = soup.find_all('div', class_=['Grid', 'Grid--with-gutter'])
+                trans_clusters = soup.select('div.Grid.Grid--with-gutter')
 
-            def link2dict(link):
-                """
-                :param link: Link to a `tedsummaries` page
-                :return: `dict` of the speaker, title, talk transcript and summary
-                """
-                soup = get_soup(link)
-                d = soup2summary(soup) | soup2meta(soup)
-                ic(d)
-                # url = d['title']
-                words = get_words(d['speaker']) + get_words(d['title'])
-                # ic(words)
-                # TED talk url eg: charmian_gooch_meet_global_corruption_s_hidden_players
-                url_ted = f'https://www.ted.com/talks/{"_".join(words)}'
-                ic(url_ted)
-                soup2transcript(get_soup(url_ted))
+                def cluster2txt(cls):
+                    # ic(cls, type(cls))
+                    ps = cls.find_all('p')
+                    # ic(ps)
+                    assert len(ps) == 1
+                    p = ps[0]
 
-                exit(1)
+                    ic(p.text)
+                    print(p.text)
+                    # txt = p.text.replace('\t', '')
+                    txt = re.sub(r'[\t]+', '', p.text)
+                    txt = re.sub(r'[\n]+', ' ', txt)
+                    # ic(txt)
+                    # print(txt)
+                    return txt
+                    # exit(1)
+                # ic(trans_clusters)
+                # ic(len(trans_clusters))
+                # ic(cluster2txt(trans_clusters[0]))
+                return dict(
+                    transcript='\n'.join(cluster2txt(cls) for cls in trans_clusters)
+                )
+            soup = get_soup(link)
+            d = soup2summary(soup) | soup2meta(soup)
+            ic(d)
+            # url = d['title']
+            words = get_words(d['speaker']) + get_words(d['title'])
+            # ic(words)
+            # TED talk url eg: charmian_gooch_meet_global_corruption_s_hidden_players
+            url_ted = f'https://www.ted.com/talks/{"_".join(words)}/transcript'
+            ic(url_ted)
+            return d | soup2transcript(get_soup(url_ted))
+            # return [link2dict(link) for link in links]
 
-            # exit(1)
-            return [link2dict(link) for link in links]
+        links = flatten([
+            (date, link) for link in links
+        ] for date, links in self.links.items())
+        return [dict(year=year, month=month) | link2dict(link) for (year, month), link in links]
 
 
 if __name__ == '__main__':
