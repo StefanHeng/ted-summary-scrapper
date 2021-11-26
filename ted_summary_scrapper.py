@@ -5,7 +5,6 @@ All relevant information are in the static website
 
 import re
 
-import ent as ent
 import requests
 
 import bs4
@@ -21,7 +20,6 @@ def get_soup(url):
 
 def get_words(s: str) -> list[str]:
     # Remove empty strings
-    # return list(filter(lambda w: w, re.split(r'\W+', s)))
     return list(filter(bool, re.split(r'\W+', s)))
 
 
@@ -30,9 +28,9 @@ class TedSummaryScrapper:
         self.url = config('url_seeds.ted_summary')
         self.soup = get_soup(self.url)
         self.link_divisions = self._link_divisions_by_month()
-        ic(self.link_divisions)
+        # ic(self.link_divisions)
         self.links = self._sum_links()
-        ic(self.links, len(flatten(self.links.values())))
+        # ic(self.links, len(flatten(self.links.values())))
         self.sums = self._sums()
         ic(self.sums)
 
@@ -63,33 +61,31 @@ class TedSummaryScrapper:
         def link2dict(link):
             # if month == (2015, 4):
             #     ic(link)
-            def soup2summary(soup):
+            def soup2summary(s_):
                 """
-                :param soup: `BeautifulSoup` object for a `tedsummaries` page
+                :param s_: `BeautifulSoup` object for a `tedsummaries` page
                 """
-                entries = soup.find_all('div', class_='entry-content')
+                entries = s_.find_all('div', class_='entry-content')
                 assert len(entries) == 1
                 entry = entries[0]
 
                 def elm2str(elm):
                     if elm.name == 'p':
                         return elm.text
-                    else:  # `ol`
+                    else:  # `ol` or 'ul'
                         ic('here')
-                        return '\n'.join(li.text for li in elm.find_all('li'))
+                        return '\n'.join(f'{idx+1}. {li.text}' for idx, li in enumerate(elm.find_all('li')))
 
-                elms = entry.find_all(['p', 'ol'])
-                # ic(elms)
+                elms = entry.find_all(['p', 'ol', 'ul'])
                 idx_strt = [p.__str__() for p in elms].index('<p><strong>Summary</strong></p>')
                 idx_end = [p.__str__() for p in elms].index('<p><strong>My Thoughts</strong></p>')
-                elms = elms[idx_strt+1 : idx_end]
-                # ic(elms)
+                elms = elms[idx_strt+1:idx_end]
                 return dict(
                     summary='\n'.join(elm2str(elm) for elm in elms)
                 )
 
-            def soup2meta(soup):
-                titles = soup.find_all('h1', class_='entry-title')
+            def soup2meta(s_):
+                titles = s_.find_all('h1', class_='entry-title')
                 assert len(titles) == 1
                 title = titles[0]
 
@@ -99,52 +95,36 @@ class TedSummaryScrapper:
                     title=m.group('title').lower()
                 )
 
-            def soup2transcript(soup: BeautifulSoup):
+            def soup2transcript(s_: BeautifulSoup):
                 """
-                :param soup: `BeautifulSoup` object for a `ted` talk page
+                :param s_: `BeautifulSoup` object for a `ted` talk page
                 """
-                # ic(soup.prettify())
-                # trans_clusters = soup.find_all('div', class_=['Grid', 'Grid--with-gutter'])
-                trans_clusters = soup.select('div.Grid.Grid--with-gutter')
+                trans_clusters = s_.select('div.Grid.Grid--with-gutter')
 
                 def cluster2txt(cls):
-                    # ic(cls, type(cls))
                     ps = cls.find_all('p')
-                    # ic(ps)
                     assert len(ps) == 1
-                    p = ps[0]
-
-                    ic(p.text)
-                    print(p.text)
-                    # txt = p.text.replace('\t', '')
-                    txt = re.sub(r'[\t]+', '', p.text)
-                    txt = re.sub(r'[\n]+', ' ', txt)
-                    # ic(txt)
-                    # print(txt)
-                    return txt
-                    # exit(1)
-                # ic(trans_clusters)
-                # ic(len(trans_clusters))
-                # ic(cluster2txt(trans_clusters[0]))
+                    txt = re.sub(r'[\t]+', '', ps[0].text)
+                    return re.sub(r'[\n]+', ' ', txt)
                 return dict(
                     transcript='\n'.join(cluster2txt(cls) for cls in trans_clusters)
                 )
             soup = get_soup(link)
             d = soup2summary(soup) | soup2meta(soup)
-            ic(d)
-            # url = d['title']
             words = get_words(d['speaker']) + get_words(d['title'])
-            # ic(words)
             # TED talk url eg: charmian_gooch_meet_global_corruption_s_hidden_players
             url_ted = f'https://www.ted.com/talks/{"_".join(words)}/transcript'
-            ic(url_ted)
+            # ic(url_ted)
             return d | soup2transcript(get_soup(url_ted))
-            # return [link2dict(link) for link in links]
 
         links = flatten([
             (date, link) for link in links
         ] for date, links in self.links.items())
-        return [dict(year=year, month=month) | link2dict(link) for (year, month), link in links]
+        for date, link in links:
+            if date == (2015, 4):
+                ic(link2dict(link))
+                exit(1)
+        # return [dict(year=year, month=month) | link2dict(link) for (year, month), link in links]
 
 
 if __name__ == '__main__':
