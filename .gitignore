@@ -1,5 +1,8 @@
 .idea/
 .DS_Store
+# Not consider scrapy for now
+product_scraper/
+scrapy.cfg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
