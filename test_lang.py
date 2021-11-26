@@ -18,3 +18,5 @@ if __name__ == '__main__':
 
     # ic(re.match(r'(\d{4})', s))
     # ic(re.match(r'^/\d{4}/\d{2}/$', s))
+
+    ic(re.split(r'\W+', 'Words, words, words.'))
