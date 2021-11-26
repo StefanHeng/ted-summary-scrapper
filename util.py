@@ -1,5 +1,8 @@
 from functools import reduce
+from typing import TypeVar, Generic, Iterable
 import json
+
+T = TypeVar('T')
 
 
 def get(dic, ks):
@@ -23,3 +26,11 @@ def config(attr):
             config.config = json.load(f)
     return get(config.config, attr)
 
+
+# def flatten(lst: list[list[T]]) -> list[T]:
+# def flatten(lst: Iterable[Iterable[T]]) -> Iterable[T]:
+def flatten(lst):
+    """
+    Flatten list of list into
+    """
+    return sum(lst, [])
