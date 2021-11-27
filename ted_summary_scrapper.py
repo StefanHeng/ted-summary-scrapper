@@ -193,7 +193,7 @@ class TedSummaryScrapper:
 if __name__ == '__main__':
     def export():
         tss = TedSummaryScrapper()
-    export()
+    # export()
 
     def sanity_check():
         with open('ted-summaries.json', 'r') as f:
