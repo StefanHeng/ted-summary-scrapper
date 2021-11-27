@@ -49,10 +49,13 @@ class TedSummaryScrapper:
                 # Not found on ted.com
                 'https://tedsummaries.com/2013/12/27/the-paradoxes-of-power-in-australia-geoff-aigner/',
                 'https://tedsummaries.com/2013/10/06/biochemical-degradation-of-plastics-phthalates/',
-                'https://tedsummaries.com/2013/10/05/welcome/'
+                'https://tedsummaries.com/2013/10/05/welcome/',
+                # Found on ted.com without transcripts
+                'https://tedsummaries.com/2015/03/24/ymir-vigfusson-why-i-teach-people-how-to-hack/',
+
             ], v)
         ) for k, v in self.links.items()}
-        print(f'Scraping {len(flatten(self.links.values()))} links... ')
+        print(f'Scraping {len(flatten(self.links.values()))} talks... ')
         # ic(self.links)
         self.sums = self._sums()
         # ic(self.sums)
@@ -198,4 +201,19 @@ class TedSummaryScrapper:
 
 
 if __name__ == '__main__':
-    tss = TedSummaryScrapper()
+    def export():
+        tss = TedSummaryScrapper()
+    # export()
+
+    def sanity_check():
+        with open('ted-summaries.json', 'r') as f:
+            lst = json.load(f)
+            # ic(len(lst), lst[:5])
+            count = 0
+            for d in lst:
+                if len(d['transcript']) == 0:
+                    ic(d['title'], d['url_summary'], d['url_ted'])
+                    count += 1
+            ic(count)
+    sanity_check()
+
