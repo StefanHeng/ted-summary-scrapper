@@ -5,6 +5,10 @@ config = dict(
     url_seeds=dict(
         ted='https://www.ted.com/talks',
         ted_summary='https://tedsummaries.com'
+    ),
+    heuristics=dict(
+        url_ignore=[],
+        meta_map={}
     )
 )
 
