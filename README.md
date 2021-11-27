@@ -1,5 +1,5 @@
 # ted-summary-scrapper
-Scrape 139 TED talks with summaries from [tedsummaries.com](https://tedsummaries.com) and the corresponding ted talk transcripts. 
+Scrape 100+ TED talks with summaries from [tedsummaries.com](https://tedsummaries.com) and the corresponding ted talk transcripts. 
 
 
 ## User Guide 

@@ -2,5 +2,95 @@
     "url_seeds": {
         "ted": "https://www.ted.com/talks",
         "ted_summary": "https://tedsummaries.com"
+    },
+    "heuristics": {
+        "url_ignore": [
+            "https://tedsummaries.com/2014/08/03/tedsummaries-questions-to-you/",
+            "https://tedsummaries.com/2013/10/05/welcome/",
+            "https://tedsummaries.com/2013/12/27/the-paradoxes-of-power-in-australia-geoff-aigner/",
+            "https://tedsummaries.com/2013/10/06/biochemical-degradation-of-plastics-phthalates/",
+            "https://tedsummaries.com/2015/03/04/barbara-oakley-learning-how-to-learn/",
+            "https://tedsummaries.com/2015/01/19/heather-white-its-not-about-working-the-room/",
+            "https://tedsummaries.com/2014/04/17/the-most-important-lesson-from-83000-brain-scans-daniel-amen/",
+            "https://tedsummaries.com/2014/04/14/think-small-alastair-humphreys/",
+            "https://tedsummaries.com/2014/02/18/the-new-way-to-work-charlie-hoehn/",
+            "https://tedsummaries.com/2014/02/13/the-discipline-of-finishing-conor-neill/",
+            "https://tedsummaries.com/2013/10/05/how-to-learn-anything-in-20-hours/",
+            "https://tedsummaries.com/2015/03/24/ymir-vigfusson-why-i-teach-people-how-to-hack/"
+        ],
+        "meta_map": {
+            "Will Marshall: Tiny satellites that photograph the entire planet, every day": {
+                "speaker": "Will Marshall",
+                "title": "Tiny satellites show us the Earth as it changes in near-real-time"
+            },
+            "Nicholas Stern: The state of the climate \u2014 and what we might do about it": {
+                "speaker": "Lord Nicholas Stern",
+                "title": "The state of the climate \u2014 and what we might do about it"
+            },
+            "Hans Rosling and Osa Rosling: How not to be ignorant about the world": {
+                "speaker": "Hans and Ola Rosling",
+                "title": "How not to be ignorant about the world"
+            },
+            "Johnny Lee: Wii Remote hacks": {
+                "speaker": "Johnny Lee",
+                "title": "Free or Cheap Wii Remote hacks"
+            },
+            "My philosophy for a happy life: Sam Berns": {
+                "speaker": "Sam Berns",
+                "title": "My philosophy for a happy life"
+            },
+            "Arthur Benjamin: Lightning calculation and other \u201cMathemagic\u201d": {
+                "speaker": "Arthur Benjamin",
+                "title": "A performance of \u201cMathemagic\u201d"
+            },
+            "Hans Rosling: Debunking third-world myths with the best stats you\u2019ve ever seen": {
+                "speaker": "Hans Rosling",
+                "title": "The best stats you\u2019ve ever seen"
+            },
+            "Ed Yong: Suicidal wasps, zombie roaches and other parasite tales": {
+                "speaker": "Ed Yong",
+                "title": "Zombie roaches and other parasite tales"
+            },
+            "Pattie Maes (and Pranav Mistry): Unveiling game-changing wearable tech": {
+                "speaker": "Pattie Maes + Pranav Mistry",
+                "title": "Meet the SixthSense interaction"
+            },
+            "Jamie Oliver\u2019s TED Prize wish: Teach every child about food": {
+                "speaker": "Jamie Oliver",
+                "title": "Teach every child about food"
+            },
+            "Rory Sutherland: Life lessons of an Ad Man": {
+                "speaker": "Rory Sutherland",
+                "title": "Life lessons from an ad Man"
+            },
+            "James Randi: Homeopathy, Psychics and fraud": {
+                "speaker": "James Randi",
+                "title": "Homeopathy, quackery and fraud"
+            },
+            "Kary Mullis: Celebrating the scientific experiment": {
+                "speaker": "Kary Mullis",
+                "title": "Play! Experiment! Discover!"
+            },
+            "Jill Bolte Taylor\u2019s stroke of insight": {
+                "speaker": "Jill Bolte Taylor",
+                "title": "My stroke of insight"
+            },
+            "A realistic vision for World Peace": {
+                "speaker": "Jody Williams",
+                "title": "A realistic vision for World Peace"
+            },
+            "Treating violence as a contagious disease": {
+                "speaker": "Gary Slutkin",
+                "title": "Let's treat violence like a contagious disease"
+            },
+            "Online Filter Bubbles": {
+                "speaker": "Eli Pariser",
+                "title": "Beware online \u201cFilter Bubbles\u201d"
+            },
+            "Can technology solve big problems?": {
+                "speaker": "Jason Pontin",
+                "title": "Can technology solve our big problems?"
+            }
+        }
     }
 }
