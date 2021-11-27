@@ -24,9 +24,16 @@ def get_words(s: str) -> list[str]:
     return list(filter(bool, re.split(r'\W+', s)))  # Remove empty strings
 
 
+def clean_text(s: str):
+    # How can I remove those Unicode characters?
+    s = s.replace('\xa0', ' ')
+    s = s.replace('\u2019', "'")
+
+
 class TedSummaryScrapper:
     def __init__(self):
         self.url = config('url_seeds.ted_summary')
+        self.url_ted = config('url_seeds.ted')
         self.soup = get_soup(self.url)
         self.link_divisions = self._link_divisions_by_month()
         # ic(self.link_divisions)
@@ -75,8 +82,7 @@ class TedSummaryScrapper:
             def soup2meta(s_):
                 titles = s_.find_all('h1', class_='entry-title')
                 assert len(titles) == 1
-                txt = titles[0].text
-                txt = txt.replace('\xa0', ' ')  # A different encoding
+                txt = str(titles[0].text)
 
                 m = re.match(r'^(?P<speaker>.*?): (?P<title>.*?)$', txt)
                 ic(txt)
@@ -193,7 +199,7 @@ class TedSummaryScrapper:
             #     exit(1)
             words = get_words(d['speaker'].lower()) + get_words(d['title'].lower())
             # TED talk url eg: charmian_gooch_meet_global_corruption_s_hidden_players
-            url_ted = f'https://www.ted.com/talks/{"_".join(words)}/transcript'
+            url_ted = f'{self.url_ted}/{"_".join(words)}/transcript'
             # ic(url_ted)
             d |= soup2transcript(get_soup(url_ted))
             link2dict.count += 1
@@ -203,11 +209,11 @@ class TedSummaryScrapper:
         links = flatten([
             (date, link) for link in links
         ] for date, links in self.links.items())
-        for date, link in links:
-            if date == (2013, 10):
-                link2dict(link)
+        # for date, link in links:
+        #     if date == (2013, 10):
+        #         link2dict(link)
                 # exit(1)
-        # return [dict(year=year, month=month) | link2dict(link) for (year, month), link in links]
+        return [dict(year=year, month=month) | link2dict(link) for (year, month), link in links]
 
     def export(self, fp):
         """
