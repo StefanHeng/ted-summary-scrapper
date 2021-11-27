@@ -105,21 +105,6 @@ class TedSummaryScrapper:
 
                 m = re.match(r'^(?P<speaker>.*?): (?P<title>.*?)$', txt)
                 d_map = {  # Some earlier entries that doesn't follow the heuristic; Or the ted.com title updated
-                    'Jill Bolte Taylor’s stroke of insight': dict(
-                        speaker='Jill Bolte Taylor', title='My stroke of insight'
-                    ),
-                    'A realistic vision for World Peace': dict(
-                        speaker='Jody Williams', title='A realistic vision for World Peace'
-                    ),
-                    'Treating violence as a contagious disease': dict(
-                        speaker='Gary Slutkin', title='Let\'s treat violence like a contagious disease'
-                    ),
-                    'Online Filter Bubbles': dict(
-                        speaker='Eli Pariser', title='Beware online “Filter Bubbles”'
-                    ),
-                    'Can technology solve big problems?': dict(
-                        speaker='Jason Pontin', title='Can technology solve our big problems?'
-                    ),
                     'Will Marshall: Tiny satellites that photograph the entire planet, every day': dict(
                         speaker='Will Marshall',
                         title='Tiny satellites show us the Earth as it changes in near-real-time'
@@ -160,7 +145,21 @@ class TedSummaryScrapper:
                     'Kary Mullis: Celebrating the scientific experiment': dict(
                         speaker='Kary Mullis', title='Play! Experiment! Discover!'
                     ),
-
+                    'Jill Bolte Taylor’s stroke of insight': dict(
+                        speaker='Jill Bolte Taylor', title='My stroke of insight'
+                    ),
+                    'A realistic vision for World Peace': dict(
+                        speaker='Jody Williams', title='A realistic vision for World Peace'
+                    ),
+                    'Treating violence as a contagious disease': dict(
+                        speaker='Gary Slutkin', title='Let\'s treat violence like a contagious disease'
+                    ),
+                    'Online Filter Bubbles': dict(
+                        speaker='Eli Pariser', title='Beware online “Filter Bubbles”'
+                    ),
+                    'Can technology solve big problems?': dict(
+                        speaker='Jason Pontin', title='Can technology solve our big problems?'
+                    )
                 }
                 return (  # Noise in the blog
                     (txt in d_map and d_map[txt]) or
@@ -260,10 +259,10 @@ class TedSummaryScrapper:
         links = flatten([
             (date, link) for link in links
         ] for date, links in self.links.items())
-        for date, link in links:
-            if date == (2013, 10):
-                link2dict(link)
-        # return [dict(year=year, month=month) | link2dict(link) for (year, month), link in links]
+        # for date, link in links:
+        #     if date == (2013, 10):
+        #         link2dict(link)
+        return [dict(year=year, month=month) | link2dict(link) for (year, month), link in links]
 
     def export(self):
         fnm = f'{self.fp}.json'
@@ -276,7 +275,7 @@ class TedSummaryScrapper:
 if __name__ == '__main__':
     def export():
         tss = TedSummaryScrapper()
-    export()
+    # export()
 
     def sanity_check():
         with open('ted-summaries.json', 'r') as f:
@@ -288,5 +287,5 @@ if __name__ == '__main__':
                     ic(d['title'], d['url_summary'], d['url_ted'])
                     count += 1
             ic(count)
-    # sanity_check()
+    sanity_check()
 
