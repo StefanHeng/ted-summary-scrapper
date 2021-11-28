@@ -30,8 +30,8 @@ config = dict(
                 speaker='Will Marshall',
                 title='Tiny satellites show us the Earth as it changes in near-real-time'
             ),
-            'Nicholas Stern: The state of the climate — and what we might do about it': dict(
-                speaker='Lord Nicholas Stern', title='The state of the climate — and what we might do about it'
+            'Nicholas Stern: The state of the climate - and what we might do about it': dict(
+                speaker='Lord Nicholas Stern', title='The state of the climate - and what we might do about it'
             ),
             'Hans Rosling and Osa Rosling: How not to be ignorant about the world': dict(
                 speaker='Hans and Ola Rosling', title='How not to be ignorant about the world'
@@ -42,11 +42,11 @@ config = dict(
             'My philosophy for a happy life: Sam Berns': dict(
                 speaker='Sam Berns', title='My philosophy for a happy life'
             ),
-            'Arthur Benjamin: Lightning calculation and other “Mathemagic”': dict(
-                speaker='Arthur Benjamin', title='A performance of “Mathemagic”'
+            'Arthur Benjamin: Lightning calculation and other "Mathemagic"': dict(
+                speaker='Arthur Benjamin', title='A performance of "Mathemagic"'
             ),
-            'Hans Rosling: Debunking third-world myths with the best stats you’ve ever seen': dict(
-                speaker='Hans Rosling', title='The best stats you’ve ever seen'
+            'Hans Rosling: Debunking third-world myths with the best stats you\'ve ever seen': dict(
+                speaker='Hans Rosling', title='The best stats you\'ve ever seen'
             ),
             'Ed Yong: Suicidal wasps, zombie roaches and other parasite tales': dict(
                 speaker='Ed Yong', title='Zombie roaches and other parasite tales'
@@ -54,7 +54,7 @@ config = dict(
             'Pattie Maes (and Pranav Mistry): Unveiling game-changing wearable tech': dict(
                 speaker='Pattie Maes + Pranav Mistry', title='Meet the SixthSense interaction'
             ),
-            'Jamie Oliver’s TED Prize wish: Teach every child about food': dict(
+            'Jamie Oliver\'s TED Prize wish: Teach every child about food': dict(
                 speaker='Jamie Oliver', title='Teach every child about food'
             ),
             'Rory Sutherland: Life lessons of an Ad Man': dict(
@@ -66,7 +66,7 @@ config = dict(
             'Kary Mullis: Celebrating the scientific experiment': dict(
                 speaker='Kary Mullis', title='Play! Experiment! Discover!'
             ),
-            'Jill Bolte Taylor’s stroke of insight': dict(
+            'Jill Bolte Taylor\'s stroke of insight': dict(
                 speaker='Jill Bolte Taylor', title='My stroke of insight'
             ),
             'A realistic vision for World Peace': dict(
@@ -76,7 +76,7 @@ config = dict(
                 speaker='Gary Slutkin', title='Let\'s treat violence like a contagious disease'
             ),
             'Online Filter Bubbles': dict(
-                speaker='Eli Pariser', title='Beware online “Filter Bubbles”'
+                speaker='Eli Pariser', title='Beware online "Filter Bubbles"'
             ),
             'Can technology solve big problems?': dict(
                 speaker='Jason Pontin', title='Can technology solve our big problems?'

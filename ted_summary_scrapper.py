@@ -20,16 +20,6 @@ def get_soup(url):
     return BeautifulSoup(requests.get(url, 'html.parser').content, 'html.parser')
 
 
-def get_words(s: str) -> list[str]:
-    return list(filter(bool, re.split(r'\W+', s)))  # Remove empty strings
-
-
-# def clean_text(s: str):
-#     # How can I remove those Unicode characters?
-#     s = s.replace('\xa0', ' ')
-#     s = s.replace('\u2019', "'")
-
-
 class TedSummaryScrapper:
     def __init__(self, fp='ted-summaries'):
         """
@@ -46,9 +36,9 @@ class TedSummaryScrapper:
         self.soup = get_soup(self.url)
         self.link_divisions = self._link_divisions_by_month()
         self.links = self._sum_links()
-        self.links = {k: list(filter(
-            lambda link: link not in self.url_ignore, v)
-        ) for k, v in self.links.items()}
+        self.links = {k: [
+            link for link in links if link not in self.url_ignore
+        ] for k, links in self.links.items()}
         print(f'Scraping {len(flatten(self.links.values()))} talks... ')
         # ic(self.links)
         self.sums = self._sums()
@@ -85,8 +75,8 @@ class TedSummaryScrapper:
             def soup2meta(s_):
                 titles = s_.find_all('h1', class_='entry-title')
                 assert len(titles) == 1
-                title = str(titles[0].text)
-                title = title.replace('\xa0', ' ')
+                title = unicode2ascii(str(titles[0].text))
+                # title = title.replace('\xa0', ' ')
 
                 m = re.match(r'^(?P<speaker>.*?): (?P<title>.*?)$', title)
                 return (  # Noise in the blog
@@ -94,9 +84,9 @@ class TedSummaryScrapper:
                     dict(speaker=m.group('speaker'), title=m.group('title'))
                 )
 
-            def soup2summary(s_):
+            def soup2summary(soup_):
                 """
-                :param s_: `BeautifulSoup` object for a `tedsummaries` page
+                :param soup_: `BeautifulSoup` object for a `tedsummaries` page
                 """
                 def elm2str(elm):
                     if elm.name == 'p':
@@ -110,10 +100,20 @@ class TedSummaryScrapper:
                         txt = [txt]
                     return any(t in texts_elm for t in txt)
 
-                entries = s_.find_all('div', class_='entry-content')
+                entries = soup_.find_all('div', class_='entry-content')
                 assert len(entries) == 1
                 # The summary may contain `blockquote`s, ignored
-                elms = entries[0].find_all(['p', 'ol', 'ul'])
+                # Otherwise may contain e.g. Twitter links
+                # elms = entries[0].find_children(['p', 'ol', 'ul'], reccursive=False)
+                # ic(type(entries[0]))
+                # elms = entries[0].findChildren(['p', 'ol', 'ul'], reccursive=False)
+                elms = entries[0].find_all(['p', 'ol', 'ul'], recursive=False)
+                # elms = entries[0].findChildren(['ul'], reccursive=False)
+                # if link == 'https://tedsummaries.com/2014/02/12/alex-wissner-gross-a-new-equation-for-intelligence/':
+                #     print(entries[0].prettify())
+                #     ic(elms)
+                #     # ic([e.name for e in elms])
+                #     exit(1)
                 # There should always be one
                 elm_sums = list(filter(lambda e: contains_text(e, ['Summary', 'Summary:']), elms))
                 assert len(elm_sums) == 1
@@ -128,13 +128,14 @@ class TedSummaryScrapper:
                     warn(f'Title after summary not found for [{link}]')
                 elms = elms[idx_strt+1:idx_end]
                 return dict(
-                    summary='\n'.join(elm2str(elm) for elm in elms)
+                    summary='\n'.join(unicode2ascii(elm2str(elm)) for elm in elms)
                 )
 
             def ted_url2transcript(url):
                 """
                 :param url: URL for a `ted` talk page
                 """
+                ic(url)
                 s_ = get_soup(url)
                 title = s_.find('title').string
                 req_lim_err = '429 Rate Limited too many requests'
@@ -148,8 +149,8 @@ class TedSummaryScrapper:
                     s_ = get_soup(url)
                     title = s_.find('title').string
                 trans_clusters = s_.select('div.Grid.Grid--with-gutter')
-                if len(trans_clusters) == 0:
-                    ic(s_.prettify())
+                # if len(trans_clusters) == 0:
+                #     ic(s_.prettify())
                 assert len(trans_clusters) >= 1
 
                 def cluster2txt(cls):
@@ -158,7 +159,7 @@ class TedSummaryScrapper:
                     txt = re.sub(r'[\t]+', '', ps[0].text)
                     return re.sub(r'[\n]+', ' ', txt)
                 return dict(
-                    transcript='\n'.join(cluster2txt(cls) for cls in trans_clusters)
+                    transcript='\n'.join(unicode2ascii(cluster2txt(cls)) for cls in trans_clusters)
                 )
             print(f'Scrapping TED talk {link2dict.count+1}: [{link}]')
             soup = get_soup(link)
@@ -178,7 +179,7 @@ class TedSummaryScrapper:
             (date, link) for link in links
         ] for date, links in self.links.items())
         # for date, link in links:
-        #     if date == (2013, 10):
+        #     if date == (2014, 2):
         #         link2dict(link)
         return [dict(year=year, month=month) | link2dict(link) for (year, month), link in links]
 
@@ -187,13 +188,13 @@ class TedSummaryScrapper:
         open(fnm, 'a').close()  # Create file in OS
         with open(fnm, 'w') as f:
             json.dump(self.sums, f, indent=4)
-            print(f'Scrapping & file write complete at [{fnm}]')
+            print(f'Scrapping completed & written to [{fnm}]')
 
 
 if __name__ == '__main__':
     def export():
         tss = TedSummaryScrapper()
-    # export()
+    export()
 
     def sanity_check():
         with open('ted-summaries.json', 'r') as f:
