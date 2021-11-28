@@ -45,21 +45,15 @@ def strip_accents(text):
     return ''.join(char for char in unicodedata.normalize('NFKD', text) if unicodedata.category(char) != 'Mn')
 
 
-def unicode2ascii(s: str):
-    # s = re.sub('\xa0|\u00a0', ' ', s)
-    s = re.sub('[\u00a0]', ' ', s)
-    # s = s.replace('\u2013', '-')
-    s = re.sub('[\u2013\u2014]', '-', s)
-    # s = s.replace('\u201c', '"')
-    # s = s.replace('\u2019', "'")
-    # s = s.replace('\u2018', "'")
-    s = re.sub(r'[‘’]', "'", s)
-    # s = re.sub(r'[“”]', '"', s)
-    s = re.sub(r'[\u201c\u201d]', '"', s)
-    s = strip_accents(s)
-    s = re.sub(r'[\u0094\u0080\u00a1\u266b]', '', s)
+def unicode2ascii(string: str):
+    string = re.sub('[\u00a0]', ' ', string)
+    string = re.sub('[\u2013\u2014]', '-', string)
+    string = re.sub(r'[‘’]', "'", string)
+    string = re.sub(r'[\u201c\u201d]', '"', string)
+    string = strip_accents(string)
+    string = re.sub(r'[\u0094\u0080\u00a1\u266b]', '', string)
     # s = str(s.encode('ascii', 'ignore'))  # Ignore the rest
-    return s
+    return string
     # return str(unicodedata.normalize('NFKD', s).encode('ascii', 'ignore'))
 
 
@@ -332,10 +326,10 @@ if __name__ == '__main__':
     # res = requests.get('https://tedsummaries.com', 'html.parser')
     # ic(res.encoding)
     # for s_ in [s1, s2, s3, s4, s5, s7]:
-    for s_ in [s1, s4, s7, s8, s9]:
-        s_ = unicode2ascii(s_)
-        print(s_)
-        ic(json.dumps(s_))
+    for s in [s1, s4, s7, s8, s9]:
+        s = unicode2ascii(s)
+        print(s)
+        ic(json.dumps(s))
 
     ic(strip_accents('áéíñóúü'))
     ic(strip_accents('Ramírez Sánchez'))

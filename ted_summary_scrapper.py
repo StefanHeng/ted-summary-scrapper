@@ -76,8 +76,6 @@ class TedSummaryScrapper:
                 titles = s_.find_all('h1', class_='entry-title')
                 assert len(titles) == 1
                 title = unicode2ascii(str(titles[0].text))
-                # title = title.replace('\xa0', ' ')
-
                 m = re.match(r'^(?P<speaker>.*?): (?P<title>.*?)$', title)
                 return (  # Noise in the blog
                     (title in self.meta_map and self.meta_map[title]) or
@@ -104,17 +102,7 @@ class TedSummaryScrapper:
                 assert len(entries) == 1
                 # The summary may contain `blockquote`s, ignored
                 # Otherwise may contain e.g. Twitter links
-                # elms = entries[0].find_children(['p', 'ol', 'ul'], reccursive=False)
-                # ic(type(entries[0]))
-                # elms = entries[0].findChildren(['p', 'ol', 'ul'], reccursive=False)
                 elms = entries[0].find_all(['p', 'ol', 'ul'], recursive=False)
-                # elms = entries[0].findChildren(['ul'], reccursive=False)
-                # if link == 'https://tedsummaries.com/2014/02/12/alex-wissner-gross-a-new-equation-for-intelligence/':
-                #     print(entries[0].prettify())
-                #     ic(elms)
-                #     # ic([e.name for e in elms])
-                #     exit(1)
-                # There should always be one
                 elm_sums = list(filter(lambda e: contains_text(e, ['Summary', 'Summary:']), elms))
                 assert len(elm_sums) == 1
                 idx_strt = elms.index(elm_sums[0])
@@ -135,7 +123,6 @@ class TedSummaryScrapper:
                 """
                 :param url: URL for a `ted` talk page
                 """
-                ic(url)
                 s_ = get_soup(url)
                 title = s_.find('title').string
                 req_lim_err = '429 Rate Limited too many requests'
@@ -149,8 +136,6 @@ class TedSummaryScrapper:
                     s_ = get_soup(url)
                     title = s_.find('title').string
                 trans_clusters = s_.select('div.Grid.Grid--with-gutter')
-                # if len(trans_clusters) == 0:
-                #     ic(s_.prettify())
                 assert len(trans_clusters) >= 1
 
                 def cluster2txt(cls):
